@@ -1,5 +1,7 @@
-package com.challenge.demo;
+package com.challenge.demo.controller;
 
+import com.challenge.demo.domain.Site;
+import com.challenge.demo.repository.SiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +39,8 @@ public class SiteController {
 	@GetMapping()
 	public ResponseEntity<List<Site>> getSites() {
 		return Optional
-				.ofNullable(siteRepository.findAll())
-				.map(sites -> ResponseEntity.ok(sites))
+				.of(siteRepository.findAll())
+				.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -69,7 +71,7 @@ public class SiteController {
 	public ResponseEntity<Site> getSiteById(@PathVariable(value = "id") Long siteId) {
 		return siteRepository
 				.findById(siteId)
-				.map(site -> ResponseEntity.ok(site))
+				.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 

@@ -1,5 +1,16 @@
-package com.challenge.demo;
+package com.challenge.demo.controller;
 
+import com.challenge.demo.domain.Question;
+import com.challenge.demo.domain.QuestionAnswer;
+import com.challenge.demo.dto.QuestionAnswerDTO;
+import com.challenge.demo.dto.QuestionDTO;
+import com.challenge.demo.repository.QuestionAnswerRepository;
+import com.challenge.demo.repository.QuestionRepository;
+import com.challenge.demo.repository.SiteRepository;
+import com.challenge.demo.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/questions")
@@ -29,6 +37,9 @@ public class QuestionController {
 	@Autowired
 	QuestionAnswerRepository qaRepository;
 
+	@Autowired
+	UserRepository userRepository;
+
 	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<QuestionDTO> createQuestion(@RequestBody QuestionDTO incomingQuestion) {
@@ -41,10 +52,11 @@ public class QuestionController {
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
+
 	@GetMapping()
 	public ResponseEntity<List<QuestionDTO>> getSites() {
 		return Optional
-				.ofNullable(questionRepository.findAll())
+				.of(questionRepository.findAll())
 				.map(questions -> ResponseEntity.ok(QuestionDTO.build(questions)))
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
@@ -102,5 +114,16 @@ public class QuestionController {
 				.findById(questionId)
 				.map(question -> ResponseEntity.ok(QuestionAnswerDTO.build(question.getAnswers())))
 				.orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+	@GetMapping("user/{userUUID}/site/{siteUUID}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<QuestionDTO> getByUserAndSite(@PathVariable UUID userUUID, @PathVariable UUID siteUUID) {
+	  List<Question> questions = questionRepository.findAllBySiteSiteUUID(siteUUID);
+
+	 return questions.isEmpty() ? ResponseEntity.notFound().build() : userRepository.findAllByUserUUID(userUUID)
+			  .stream().flatMap(user -> user.getQuestionAnswers().stream()).map(QuestionAnswer::getQuestion)
+			  .filter(question -> !questions.contains(question)).map(question -> QuestionDTO.build(question))
+			  .findFirst().map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.ok(QuestionDTO.build(questions.get(0))));
 	}
 }
