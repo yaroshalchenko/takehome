@@ -22,20 +22,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "site_id")
-    private Long userId;
+  private static final long serialVersionUID = 1L;
 
-    @EqualsAndHashCode.Include
-    @Column(nullable = false, name = "user_uuid", unique = true)
-    private UUID userUUID;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "site_id")
+  private Long userId;
 
-    @EqualsAndHashCode.Include
-    @Column(nullable = false, name = "username", unique = true)
-    private String username;
+  @EqualsAndHashCode.Include
+  @Column(nullable = false, name = "user_uuid", unique = true)
+  private UUID userUUID;
 
-    @OneToMany
-    private List<QuestionAnswer> questionAnswers;
+  @EqualsAndHashCode.Include
+  @Column(nullable = false, name = "username", unique = true)
+  private String username;
+
+  @OneToMany private List<QuestionAnswer> questionAnswers;
 }

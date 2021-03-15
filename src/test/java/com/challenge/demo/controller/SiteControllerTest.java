@@ -16,24 +16,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = SiteController.class)
 public class SiteControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @MockBean
-    private SiteRepository siteRepository;
+  @MockBean private SiteRepository siteRepository;
 
-    @Test
-    public void testSiteController() throws Exception {
-        mockMvc.perform(post("/sites")
+  @Test
+  public void testSiteController() throws Exception {
+    mockMvc
+        .perform(
+            post("/sites")
                 .content("{\"url\": \"www.bob.com\"}")
                 .header("Content-Type", "application/json"))
-                .andExpect(status().isCreated());
+        .andExpect(status().isCreated());
 
-        Site site = new Site();
-        site.setUrl("www.bob.com");
-        then(siteRepository).should()
-                .save(MockitoHamcrest
-                        .argThat(org.hamcrest.Matchers
-                                .hasProperty("url", Matchers.equalTo("www.bob.com"))));
-    }
+    Site site = new Site();
+    site.setUrl("www.bob.com");
+    then(siteRepository)
+        .should()
+        .save(
+            MockitoHamcrest.argThat(
+                org.hamcrest.Matchers.hasProperty("url", Matchers.equalTo("www.bob.com"))));
+  }
 }

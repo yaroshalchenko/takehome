@@ -10,41 +10,42 @@ import lombok.Data;
 
 @Data
 public class QuestionAnswerDTO {
-	private Long id;
-	private Long questionId;
-	private String answer;
-	private Boolean isCorrectAnswer;
-	private Date createdAt;
-	private Date updatedAt;
-	private UUID uuid;
+  private Long id;
+  private Long questionId;
+  private String answer;
+  private Boolean isCorrectAnswer;
+  private Date createdAt;
+  private Date updatedAt;
+  private UUID uuid;
 
-	public static QuestionAnswer transform(final QuestionAnswerDTO newQADto, final Question question) {
-		final QuestionAnswer newQa = new QuestionAnswer();
-		newQa.setAnswer(newQADto.getAnswer());
-		newQa.setIsCorrectAnswer(newQADto.getIsCorrectAnswer());
-		newQa.setQuestion(question);
+  public static QuestionAnswer transform(
+      final QuestionAnswerDTO newQADto, final Question question) {
+    final QuestionAnswer newQa = new QuestionAnswer();
+    newQa.setAnswer(newQADto.getAnswer());
+    newQa.setIsCorrectAnswer(newQADto.getIsCorrectAnswer());
+    newQa.setQuestion(question);
 
-		return newQa;
-	}
+    return newQa;
+  }
 
-	public static QuestionAnswerDTO build(final QuestionAnswer save) {
-		final QuestionAnswerDTO newQaDto = new QuestionAnswerDTO();
+  public static QuestionAnswerDTO build(final QuestionAnswer save) {
+    final QuestionAnswerDTO newQaDto = new QuestionAnswerDTO();
 
-		newQaDto.setId(save.getId());
-		newQaDto.setAnswer(save.getAnswer());
-		newQaDto.setIsCorrectAnswer(save.getIsCorrectAnswer());
-		newQaDto.setCreatedAt(save.getCreatedAt());
-		newQaDto.setUpdatedAt(save.getUpdatedAt());
-		newQaDto.setQuestionId(save.getQuestion().getQuestionId());
+    newQaDto.setId(save.getId());
+    newQaDto.setAnswer(save.getAnswer());
+    newQaDto.setIsCorrectAnswer(save.getIsCorrectAnswer());
+    newQaDto.setCreatedAt(save.getCreatedAt());
+    newQaDto.setUpdatedAt(save.getUpdatedAt());
+    newQaDto.setQuestionId(save.getQuestion().getQuestionId());
 
-		return newQaDto;
-	}
+    return newQaDto;
+  }
 
-	public static List<QuestionAnswerDTO> build(final List<QuestionAnswer> answers) {
-		final List<QuestionAnswerDTO> ret = new ArrayList<>();
-		for (QuestionAnswer qa : answers) {
-			ret.add(build(qa));
-		}
-		return ret;
-	}
+  public static List<QuestionAnswerDTO> build(final List<QuestionAnswer> answers) {
+    final List<QuestionAnswerDTO> ret = new ArrayList<>();
+    for (QuestionAnswer qa : answers) {
+      ret.add(build(qa));
+    }
+    return ret;
+  }
 }

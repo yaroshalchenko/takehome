@@ -10,101 +10,96 @@ import lombok.Data;
 
 @Data
 public class QuestionDTO {
+  private Long questionId;
+  private Long siteId;
+  private String question;
+  private Date createdAt;
+  private Date updatedAt;
+  private QuestionDTO parent;
+  private List<QuestionDTO> children;
 
-	private Long questionId;
+  public static QuestionDTO build(Question question) {
+    final QuestionDTO obj = new QuestionDTO();
 
-	private Long siteId;
+    if (question == null) {
+      return null;
+    }
 
-	private String question;
+    obj.setQuestionId(question.getQuestionId());
+    obj.setQuestion(question.getQuestion());
+    obj.setUpdatedAt(question.getUpdatedAt());
+    obj.setCreatedAt(question.getCreatedAt());
 
-	private Date createdAt;
+    Question parent = question.getParent();
 
-	private Date updatedAt;
+    if (parent != null) {
+      obj.setParent(buildParent(parent));
+    }
 
-	private QuestionDTO parent;
+    List<Question> children = question.getChildren();
 
-	private List<QuestionDTO> children;
+    if (children != null && !children.isEmpty()) {
+      obj.setChildren(buildChildren(children));
+    }
 
-	public static QuestionDTO build(Question question) {
-		final QuestionDTO obj = new QuestionDTO();
+    return obj;
+  }
 
-		if (question== null ){
-			return null;
-		}
+  public static List<QuestionDTO> build(List<Question> questions) {
+    final List<QuestionDTO> ret = new ArrayList<>();
 
-		obj.setQuestionId(question.getQuestionId());
-		obj.setQuestion(question.getQuestion());
-		obj.setUpdatedAt(question.getUpdatedAt());
-		obj.setCreatedAt(question.getCreatedAt());
+    for (Question question : questions) {
+      ret.add(build(question));
+    }
 
-		Question parent = question.getParent();
+    return ret.stream()
+        .filter(questionDTO -> questionDTO.getParent() == null)
+        .collect(Collectors.toList());
+  }
 
-		if (parent != null){
-			obj.setParent(buildParent(parent));
-		}
+  private static QuestionDTO buildParent(Question question) {
+    final QuestionDTO obj = new QuestionDTO();
 
-		List<Question> children = question.getChildren();
+    if (question == null) {
+      return null;
+    }
 
-		if (children != null && !children.isEmpty() ) {
-			obj.setChildren(buildChildren(children));
-		}
+    obj.setQuestionId(question.getQuestionId());
+    obj.setQuestion(question.getQuestion());
+    obj.setUpdatedAt(question.getUpdatedAt());
+    obj.setCreatedAt(question.getCreatedAt());
 
-		return obj;
-	}
+    return obj;
+  }
 
-	public static List<QuestionDTO> build(List<Question> questions) {
-		final List<QuestionDTO> ret = new ArrayList<>();
+  public static List<QuestionDTO> buildChildren(List<Question> questions) {
+    final List<QuestionDTO> ret = new ArrayList<>();
 
-		for (Question question : questions) {
-			ret.add(build(question));
-		}
+    for (Question question : questions) {
+      ret.add(build(question));
+    }
 
-		return ret.stream().filter(questionDTO -> questionDTO.getParent() == null).collect(Collectors.toList());
-	}
+    return ret;
+  }
 
+  public static Question createQuestion(final QuestionDTO incomingQuestion, final Site site) {
+    final Question newQ = new Question();
+    newQ.setSite(site);
+    newQ.setQuestion(incomingQuestion.getQuestion());
 
-	private static QuestionDTO buildParent(Question question) {
-		final QuestionDTO obj = new QuestionDTO();
+    if (incomingQuestion.getChildren() != null) {
+      createChildren(newQ.getChildren(), incomingQuestion.getChildren(), site, newQ);
+    }
 
-		if (question == null ){
-			return null;
-		}
+    return newQ;
+  }
 
-		obj.setQuestionId(question.getQuestionId());
-		obj.setQuestion(question.getQuestion());
-		obj.setUpdatedAt(question.getUpdatedAt());
-		obj.setCreatedAt(question.getCreatedAt());
-
-		return obj;
-	}
-
-	public static List<QuestionDTO> buildChildren(List<Question> questions) {
-		final List<QuestionDTO> ret = new ArrayList<>();
-
-		for (Question question : questions) {
-			ret.add(build(question));
-		}
-
-		return ret;
-	}
-
-	public static Question createQuestion(final QuestionDTO incomingQuestion, final Site site) {
-		final Question newQ = new Question();
-		newQ.setSite(site);
-		newQ.setQuestion(incomingQuestion.getQuestion());
-
-		if(incomingQuestion.getChildren() != null){
-			createChildren(newQ.getChildren(), incomingQuestion.getChildren(), site, newQ);
-		}
-
-		return newQ;
-	}
-
-	private static void createChildren(List<Question> questionsCh, List<QuestionDTO> questions, Site site, Question parent) {
-		for (QuestionDTO question : questions) {
-			Question question1 = createQuestion(question, site);
-			question1.setParent(parent);
-			questionsCh.add(question1);
-		}
-	}
+  private static void createChildren(
+      List<Question> questionsCh, List<QuestionDTO> questions, Site site, Question parent) {
+    for (QuestionDTO question : questions) {
+      Question question1 = createQuestion(question, site);
+      question1.setParent(parent);
+      questionsCh.add(question1);
+    }
+  }
 }

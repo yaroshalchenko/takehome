@@ -24,49 +24,55 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private QuestionAnswerRepository questionAnswerRepository;
+  @Autowired private QuestionAnswerRepository questionAnswerRepository;
 
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createUser(@RequestBody UserDTO userDTO) {
-        final User newUser = User.builder()
-                .userUUID(UUID.randomUUID())
-                .username(userDTO.getUsername())
-                .build();
+  @PostMapping()
+  @ResponseStatus(HttpStatus.CREATED)
+  public UserDTO createUser(@RequestBody UserDTO userDTO) {
+    final User newUser =
+        User.builder().userUUID(UUID.randomUUID()).username(userDTO.getUsername()).build();
 
-        return UserDTO.build(userRepository.save(newUser));
-    }
+    return UserDTO.build(userRepository.save(newUser));
+  }
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<UserDTO> getAllUsers() {
-        return userRepository.findAll()
-                .stream().map(UserDTO::build).collect(Collectors.toList());
-    }
+  @GetMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public List<UserDTO> getAllUsers() {
+    return userRepository.findAll().stream().map(UserDTO::build).collect(Collectors.toList());
+  }
 
-    @PostMapping("/{id}/answers")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createAnswer(@PathVariable(value = "id") Long id, @RequestBody QuestionAnswerDTO questionAnswerDTO) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("User with id " + id  + " is not exist"));
-        QuestionAnswer questionAnswer = questionAnswerRepository.findById(
-                questionAnswerDTO.getId()).orElseThrow(() ->
-                new NoSuchElementException("Question answer with id " + questionAnswerDTO.getId()  + " is not exist"));
-        user.getQuestionAnswers().add(questionAnswer);
+  @PostMapping("/{id}/answers")
+  @ResponseStatus(HttpStatus.CREATED)
+  public UserDTO createAnswer(
+      @PathVariable(value = "id") Long id, @RequestBody QuestionAnswerDTO questionAnswerDTO) {
+    User user =
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new NoSuchElementException("User with id " + id + " is not exist"));
+    QuestionAnswer questionAnswer =
+        questionAnswerRepository
+            .findById(questionAnswerDTO.getId())
+            .orElseThrow(
+                () ->
+                    new NoSuchElementException(
+                        "Question answer with id " + questionAnswerDTO.getId() + " is not exist"));
+    user.getQuestionAnswers().add(questionAnswer);
 
-        return UserDTO.build(userRepository.save(user));
-    }
+    return UserDTO.build(userRepository.save(user));
+  }
 
-    @GetMapping("/{id}/answers")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<QuestionAnswerDTO> getAllAnswersByUser(@PathVariable Long id){
-            User user =  userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No such user with id " + id));
+  @GetMapping("/{id}/answers")
+  @ResponseStatus(HttpStatus.CREATED)
+  public List<QuestionAnswerDTO> getAllAnswersByUser(@PathVariable Long id) {
+    User user =
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No such user with id " + id));
 
-            return user.getQuestionAnswers().stream().map(QuestionAnswerDTO::build)
-                    .collect(Collectors.toList());
-    }
+    return user.getQuestionAnswers().stream()
+        .map(QuestionAnswerDTO::build)
+        .collect(Collectors.toList());
+  }
 }

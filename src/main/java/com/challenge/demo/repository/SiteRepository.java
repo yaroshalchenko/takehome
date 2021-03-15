@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface SiteRepository extends JpaRepository<Site, Long> {
 
-	Site findBySiteUUID(UUID uuid);
+  Site findBySiteUUID(UUID uuid);
 }

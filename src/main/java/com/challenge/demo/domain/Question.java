@@ -36,51 +36,51 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class Question implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue
-	@Column(name = "question_id")
-	private Long questionId;
+  @Id
+  @GeneratedValue
+  @Column(name = "question_id")
+  private Long questionId;
 
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	@JoinColumn(name = "site_id", referencedColumnName = "site_id")
-	@EqualsAndHashCode.Include
-	private Site site;
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @JoinColumn(name = "site_id", referencedColumnName = "site_id")
+  @EqualsAndHashCode.Include
+  private Site site;
 
-	@NotBlank
-	@Length(min = 0, max = 250)
-	@EqualsAndHashCode.Include
-	private String question;
+  @NotBlank
+  @Length(min = 0, max = 250)
+  @EqualsAndHashCode.Include
+  private String question;
 
-	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
-	@EqualsAndHashCode.Include
-	private List<QuestionAnswer> answers = new ArrayList<>();
+  @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
+  @EqualsAndHashCode.Include
+  private List<QuestionAnswer> answers = new ArrayList<>();
 
-	@Column(nullable = false, updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@CreatedDate
-	private Date createdAt;
+  @Column(nullable = false, updatable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @CreatedDate
+  private Date createdAt;
 
-	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@LastModifiedDate
-	private Date updatedAt;
+  @Column(nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @LastModifiedDate
+  private Date updatedAt;
 
-	@ManyToOne(cascade=CascadeType.ALL,  fetch = FetchType.EAGER)
-	@JoinColumn(name="parent")
-	private Question parent;
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JoinColumn(name = "parent")
+  private Question parent;
 
-	@OneToMany(mappedBy="parent",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Question> children = new ArrayList<>();
+  @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Question> children = new ArrayList<>();
 
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	public Date getCreatedAt() {
-		return createdAt;
-	}
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public Date getCreatedAt() {
+    return createdAt;
+  }
 
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
 }

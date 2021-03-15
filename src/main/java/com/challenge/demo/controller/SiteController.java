@@ -24,56 +24,55 @@ import java.util.UUID;
 @RequestMapping("/sites")
 public class SiteController {
 
-	@Autowired
-	SiteRepository siteRepository;
+  @Autowired SiteRepository siteRepository;
 
-	@PostMapping()
-	@ResponseStatus(HttpStatus.CREATED)
-	@ResponseBody
-	public Site createSite(@RequestBody Site createSite) {
-		createSite.setSiteUUID(UUID.randomUUID());
+  @PostMapping()
+  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseBody
+  public Site createSite(@RequestBody Site createSite) {
+    createSite.setSiteUUID(UUID.randomUUID());
 
-		return siteRepository.save(createSite);
-	}
+    return siteRepository.save(createSite);
+  }
 
-	@GetMapping()
-	public ResponseEntity<List<Site>> getSites() {
-		return Optional
-				.of(siteRepository.findAll())
-				.map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.notFound().build());
-	}
+  @GetMapping()
+  public ResponseEntity<List<Site>> getSites() {
+    return Optional.of(siteRepository.findAll())
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
 
-	@PutMapping("/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Site> updateSite(@RequestBody Site updatedSite, @PathVariable(value = "id") Long siteId) {
-		return siteRepository
-				.findById(siteId)
-				.map(site -> {
-					site.setUrl(updatedSite.getUrl());
-					return new ResponseEntity<>(siteRepository.save(site), HttpStatus.OK);
-				})
-				.orElseGet(() -> ResponseEntity.notFound().build());
-	}
+  @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<Site> updateSite(
+      @RequestBody Site updatedSite, @PathVariable(value = "id") Long siteId) {
+    return siteRepository
+        .findById(siteId)
+        .map(
+            site -> {
+              site.setUrl(updatedSite.getUrl());
+              return new ResponseEntity<>(siteRepository.save(site), HttpStatus.OK);
+            })
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Site> deleteSite(@PathVariable(value = "id") Long siteId) {
-		return siteRepository
-				.findById(siteId)
-				.map(site -> {
-					siteRepository.delete(site);
-					return ResponseEntity.ok(site);
-				})
-				.orElseGet(() -> ResponseEntity.notFound().build());
-	}
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Site> deleteSite(@PathVariable(value = "id") Long siteId) {
+    return siteRepository
+        .findById(siteId)
+        .map(
+            site -> {
+              siteRepository.delete(site);
+              return ResponseEntity.ok(site);
+            })
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Site> getSiteById(@PathVariable(value = "id") Long siteId) {
-		return siteRepository
-				.findById(siteId)
-				.map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.notFound().build());
-	}
-
-
+  @GetMapping("/{id}")
+  public ResponseEntity<Site> getSiteById(@PathVariable(value = "id") Long siteId) {
+    return siteRepository
+        .findById(siteId)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
 }

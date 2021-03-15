@@ -10,21 +10,16 @@ import org.springframework.test.context.TestPropertySource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@TestPropertySource(properties = {
-        "spring.jpa.hibernate.ddl-auto=create-drop"
-})
+@TestPropertySource(properties = {"spring.jpa.hibernate.ddl-auto=create-drop"})
 public class SiteRepositoryTest {
 
-    @Autowired
-    private SiteRepository siteRepository;
+  @Autowired private SiteRepository siteRepository;
 
-    @Test
-    public void findById(){
-        Site expected = new Site()
-                .setSiteId(1L)
-                .setSiteUUID(UUID.randomUUID());
-        siteRepository.save(expected);
+  @Test
+  public void findById() {
+    Site expected = new Site().setSiteId(1L).setSiteUUID(UUID.randomUUID());
+    siteRepository.save(expected);
 
-        assertEquals(expected, siteRepository.findById(1L).get());
-    }
+    assertEquals(expected, siteRepository.findById(1L).get());
+  }
 }

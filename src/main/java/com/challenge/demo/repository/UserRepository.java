@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUserUUID(UUID uuid);
+  Optional<User> findByUserUUID(UUID uuid);
 
-    List<User> findAllByUserUUID(UUID userUUID);
+  List<User> findAllByUserUUID(UUID userUUID);
 }

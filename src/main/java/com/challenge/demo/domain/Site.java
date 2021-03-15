@@ -26,29 +26,28 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "site")
 @EntityListeners(AuditingEntityListener.class)
 public class Site implements Serializable {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "site_id")
-	private Long siteId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "site_id")
+  private Long siteId;
 
-	@EqualsAndHashCode.Include
-	@Column(nullable = false, name = "site_uuid", unique = true)
-	private UUID siteUUID;
+  @EqualsAndHashCode.Include
+  @Column(nullable = false, name = "site_uuid", unique = true)
+  private UUID siteUUID;
 
-	@EqualsAndHashCode.Include
-	@Column(nullable = false, name = "url")
-	private String url;
+  @EqualsAndHashCode.Include
+  @Column(nullable = false, name = "url")
+  private String url;
 
-	@Column(nullable = false, updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@CreatedDate
-	private Date createdAt;
+  @Column(nullable = false, updatable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @CreatedDate
+  private Date createdAt;
 
-	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@LastModifiedDate
-	private Date updatedAt;
-
+  @Column(nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @LastModifiedDate
+  private Date updatedAt;
 }
